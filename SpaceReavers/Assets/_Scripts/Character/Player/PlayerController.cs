@@ -8,7 +8,7 @@ namespace _Scripts.Character
         [SerializeField] float m_MoveSpeed = 2.0f;
         
         private PlayerInputController m_PlayerInputController;
-        private PlayerAnimationController m_PlayerAnimationController;
+        private PlayerStateController m_PlayerStateController;
         private CharacterController m_CharacterController;
         
         private Vector3 m_MoveDirection = Vector3.zero;
@@ -17,7 +17,7 @@ namespace _Scripts.Character
         private void Awake()
         {
             m_PlayerInputController = GetComponent<PlayerInputController>();
-            m_PlayerAnimationController = GetComponent<PlayerAnimationController>();
+            m_PlayerStateController = GetComponent<PlayerStateController>();
             m_CharacterController = GetComponent<CharacterController>();
             m_CameraTransform = Camera.main.transform;
         }
@@ -31,17 +31,24 @@ namespace _Scripts.Character
             Vector3 right = m_CameraTransform.right;
             right.y = 0f;
             
-            m_MoveDirection = right * inputDirection.x + forward * inputDirection.y;
-            if (m_MoveDirection.magnitude <= 0) return;
-            
-            Quaternion targetRotation = Quaternion.LookRotation(m_MoveDirection);
-            Quaternion nextQuaternion = Quaternion.Slerp(transform.rotation, targetRotation, 0.3f);
-            transform.rotation = nextQuaternion;
+            m_MoveDirection = Vector3.ClampMagnitude(right * inputDirection.x + forward * inputDirection.y, 1f);
+            if (m_MoveDirection.magnitude > 0f)
+            {
+                m_PlayerStateController.ChangeState(PlayerStateType.Move);
+                Quaternion targetRotation = Quaternion.LookRotation(m_MoveDirection);
+                Quaternion nextQuaternion = Quaternion.Slerp(transform.rotation, targetRotation, 0.3f);
+                transform.rotation = nextQuaternion;
+            }
+            else
+            {
+                m_PlayerStateController.ChangeState(PlayerStateType.Idle);
+            }
+
+            m_PlayerStateController.UpdateState();
         }
 
         private void FixedUpdate()
         {
-            if (m_MoveDirection.magnitude <= 0) return;
             m_CharacterController.Move(m_MoveDirection * m_MoveSpeed * Time.fixedDeltaTime);
         }
     }

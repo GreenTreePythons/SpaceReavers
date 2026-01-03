@@ -10,10 +10,11 @@ namespace _Datas
     {
         [SerializeField] PlayerAnimation[] m_PlayerAnimations;
         
-        private Dictionary<PlayerStateType, PlayerAnimation> m_Animations = new();
+        private Dictionary<PlayerStateType, PlayerAnimation> m_Animations;
         
         private void OnEnable()
         {
+            m_Animations = new();
             foreach (var anim in m_PlayerAnimations)
             {
                 m_Animations.TryAdd(anim.StateType, anim);
@@ -38,7 +39,7 @@ namespace _Datas
         
         public PlayerStateType StateType => m_PlayerStateType;
         public AnimationClip Clip => m_Clip;
-        public string ClipName => m_Clip?.name;
+        public string ClipName => m_Clip.name;
         public float TransitionDuration => m_NormalizedTransitionDuration;
     }
 }
