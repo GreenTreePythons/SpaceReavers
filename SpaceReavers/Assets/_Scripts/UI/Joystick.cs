@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.EventSystems;
@@ -32,6 +33,9 @@ namespace _Scripts.UI
 
         [Tooltip("Set 0 or 1 for free handle, or set according to number of direction need like 4 or 8")]
         [SerializeField] JoystickDirectionType m_JoystickDirectionType = JoystickDirectionType.None;
+
+        public Vector2 InputDirection => m_InputDirection;
+        public event Action<Vector2> OnJoystickDirection;
         
         private int m_JoystickHandleDirectionCount = 0;
         private Vector2 m_InputDirection = Vector2.zero;
@@ -78,6 +82,8 @@ namespace _Scripts.UI
             {
                 m_JoystickBGRectTransform.gameObject.SetActive(false);
             }
+            
+            OnJoystickDirection?.Invoke(m_InputDirection);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -106,6 +112,8 @@ namespace _Scripts.UI
                 Vector2 offset = touchPos.normalized * (touchPos.magnitude - m_JoystickHandleMoveRange);
                 m_JoystickBGRectTransform.anchoredPosition += offset;
             }
+            
+            OnJoystickDirection?.Invoke(m_InputDirection);
         }
 
         private Vector2 GetTouchPosition(RectTransform mainCanvasRect, Vector2 touchPoint, Camera eventCamera)
