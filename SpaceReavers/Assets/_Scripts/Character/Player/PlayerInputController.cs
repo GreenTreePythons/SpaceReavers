@@ -5,7 +5,7 @@ using Joystick = _Scripts.UI.Joystick;
 namespace _Scripts.Character
 {
     [RequireComponent(typeof(PlayerInput))]
-    public class PlayerInputReader : MonoBehaviour
+    public class PlayerInputController : MonoBehaviour
     {
         [SerializeField] Joystick m_Joystick;
         

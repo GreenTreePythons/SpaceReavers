@@ -7,7 +7,8 @@ namespace _Scripts.Character
     {
         [SerializeField] float m_MoveSpeed = 2.0f;
         
-        private PlayerInputReader m_PlayerInputReader;
+        private PlayerInputController m_PlayerInputController;
+        private PlayerAnimationController m_PlayerAnimationController;
         private CharacterController m_CharacterController;
         
         private Vector3 m_MoveDirection = Vector3.zero;
@@ -15,21 +16,20 @@ namespace _Scripts.Character
         
         private void Awake()
         {
-            m_PlayerInputReader = GetComponent<PlayerInputReader>();
+            m_PlayerInputController = GetComponent<PlayerInputController>();
+            m_PlayerAnimationController = GetComponent<PlayerAnimationController>();
             m_CharacterController = GetComponent<CharacterController>();
             m_CameraTransform = Camera.main.transform;
         }
         
-        void Update()
+        private void Update()
         {
-            var inputDirection = m_PlayerInputReader.InputDirection;
+            var inputDirection = m_PlayerInputController.InputDirection;
             Vector3 forward = m_CameraTransform.forward;
             forward.y = 0f;
-            forward.Normalize();
 
             Vector3 right = m_CameraTransform.right;
             right.y = 0f;
-            right.Normalize();
             
             m_MoveDirection = right * inputDirection.x + forward * inputDirection.y;
             if (m_MoveDirection.magnitude <= 0) return;

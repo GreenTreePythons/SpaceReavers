@@ -129,9 +129,11 @@ GameObject:
   m_Component:
   - component: {fileID: 37092638}
   - component: {fileID: 37092639}
+  - component: {fileID: 37092644}
   - component: {fileID: 37092640}
   - component: {fileID: 37092641}
   - component: {fileID: 37092642}
+  - component: {fileID: 37092643}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -236,6 +238,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Scripts.Character.PlayerController
   m_MoveSpeed: 2
+--- !u!114 &37092643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37092637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01815d8eb373453c96d05a373b26dc27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Scripts.Character.PlayerAnimationController
+  m_AnimationData: {fileID: 11400000, guid: 95bb77d6872694f48b71af64a254af81, type: 2}
+--- !u!95 &37092644
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37092637}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 860793eb3324391468f1c120a75ec049, type: 3}
+  m_Controller: {fileID: 9100000, guid: 6defa2fea7e9a934a8d2cafa30dc567a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &37617496
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,7 +1034,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: PBRCharacter
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2836004473841745626, guid: f432554f564e69242897607d34218939, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
