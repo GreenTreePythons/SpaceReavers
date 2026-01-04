@@ -9,7 +9,6 @@ namespace _Scripts.Character
         Move,
         Attack,
         Reload,
-        Jump
     };
     
     public class PlayerStateController : MonoBehaviour
@@ -21,19 +20,13 @@ namespace _Scripts.Character
         private PlayerState m_CurrentState;
         
         private void Awake()
-        {
-            m_PlayerAnimationController = GetComponent<PlayerAnimationController>();
-            
-            RegisterState(PlayerStateType.Idle, new PlayerIdleState(m_PlayerAnimationController));
-            RegisterState(PlayerStateType.Move, new PlayerMoveState(m_PlayerAnimationController));
-            RegisterState(PlayerStateType.Attack, new PlayerAttackState(m_PlayerAnimationController));
-            
-            ChangeState(PlayerStateType.Idle);
+        {   
+            m_States.Add(PlayerStateType.Attack, new PlayerAttackState(m_PlayerAnimationController));
         }
-        
-        private void RegisterState(PlayerStateType type, PlayerState state)
+
+        public void Initialize(PlayerAnimationController animController)
         {
-            m_States.Add(type, state);
+            m_PlayerAnimationController = animController;
         }
         
         public void ChangeState(PlayerStateType nextStateType)
@@ -47,9 +40,6 @@ namespace _Scripts.Character
             m_CurrentState.OnEnter(CurrentStateType);
         }
 
-        public void UpdateState()
-        {
-            m_CurrentState?.OnUpdate();
-        }
+        public void OnUpdate() => m_CurrentState?.OnUpdate();
     }
 }

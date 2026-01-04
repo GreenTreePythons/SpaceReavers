@@ -1,6 +1,8 @@
-﻿namespace _Scripts.Manager
+﻿using UnityEngine;
+
+namespace _Scripts.Manager
 {
-    public class SceneManager
+    public class SceneManager : MonoBehaviour
     {
         
     }

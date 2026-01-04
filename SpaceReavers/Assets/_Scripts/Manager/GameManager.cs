@@ -1,6 +1,8 @@
-﻿namespace _Scripts.Manager
+﻿using UnityEngine;
+
+namespace _Scripts.Manager
 {
-    public class GameManager
+    public class GameManager : MonoBehaviour
     {
         
     }

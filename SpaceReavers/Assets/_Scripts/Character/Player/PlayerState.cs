@@ -17,10 +17,7 @@ namespace _Scripts.Character
             m_PlayerAnimationController.PlayAnimation(stateType);
         }
 
-        public virtual void OnUpdate()
-        {
-            
-        }
+        public virtual void OnUpdate() { }
 
         public virtual void OnExit()
         {
@@ -28,49 +25,37 @@ namespace _Scripts.Character
         }
     }
 
-    public class PlayerIdleState : PlayerState
-    {
-        public PlayerIdleState(PlayerAnimationController playerAnimationController) : base(playerAnimationController)
-        {
-        }
+    // public class PlayerIdleState : PlayerState
+    // {
+    //     public PlayerIdleState(PlayerAnimationController playerAnimationController) : base(playerAnimationController)
+    //     {
+    //     }
+    //
+    //     public override void OnEnter(PlayerStateType stateType)
+    //     {
+    //         base.OnEnter(stateType);
+    //     }
+    //
+    //     public override void OnUpdate() { }
+    //
+    //     public override void OnExit() { }
+    // }
 
-        public override void OnEnter(PlayerStateType stateType)
-        {
-            base.OnEnter(stateType);
-        }
-
-        public override void OnUpdate()
-        {
-            
-        }
-
-        public override void OnExit()
-        {
-            
-        }
-    }
-
-    public class PlayerMoveState : PlayerState
-    {
-        public PlayerMoveState(PlayerAnimationController playerAnimationController) : base(playerAnimationController)
-        {
-        }
-
-        public override void OnEnter(PlayerStateType stateType)
-        {
-            base.OnEnter(stateType);
-        }
-
-        public override void OnUpdate()
-        {
-            
-        }
-
-        public override void OnExit()
-        {
-            
-        }
-    }
+    // public class PlayerMoveState : PlayerState
+    // {
+    //     public PlayerMoveState(PlayerAnimationController playerAnimationController) : base(playerAnimationController)
+    //     {
+    //     }
+    //
+    //     public override void OnEnter(PlayerStateType stateType)
+    //     {
+    //         base.OnEnter(stateType);
+    //     }
+    //     
+    //     public override void OnUpdate() { }
+    //
+    //     public override void OnExit() { }
+    // }
 
     public class PlayerAttackState : PlayerState
     {

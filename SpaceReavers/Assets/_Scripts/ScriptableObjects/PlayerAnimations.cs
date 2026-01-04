@@ -25,7 +25,7 @@ namespace _Datas
         {
             if (m_Animations.TryGetValue(state, out var anim)) return anim;
 
-            Debug.LogWarning($"[PlayerAnimations] Animation not found: {state}");
+            Debug.LogError($"[PlayerAnimations] Animation not found: {state}");
             return null;
         }
     }
@@ -38,7 +38,6 @@ namespace _Datas
         [SerializeField] float m_NormalizedTransitionDuration;
         
         public PlayerStateType StateType => m_PlayerStateType;
-        public AnimationClip Clip => m_Clip;
         public string ClipName => m_Clip.name;
         public float TransitionDuration => m_NormalizedTransitionDuration;
     }
