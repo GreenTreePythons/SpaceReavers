@@ -5,6 +5,10 @@ namespace _Scripts.Character
     [RequireComponent(typeof(CharacterController))]
     public sealed class PlayerMoveController : MonoBehaviour
     {
+        [Header("Stat")]
+        [SerializeField] float m_MoveSpeed = 2.0f;
+        
+        [Header("Settings")]
         [SerializeField] float m_RotateSpeedDegPerSec = 720f;
 
         private CharacterController m_CharacterController;
@@ -24,7 +28,7 @@ namespace _Scripts.Character
             ChangeLocomotion(false);
         }
 
-        public void OnFixedUpdate(Vector2 input, float deltaTime, float moveSpeed)
+        public void OnFixedUpdate(Vector2 input, float deltaTime)
         {
             Vector3 forward = m_CameraTransform.forward;
             forward.y = 0f;
@@ -43,7 +47,7 @@ namespace _Scripts.Character
                     m_RotateSpeedDegPerSec * deltaTime
                 );
 
-                m_CharacterController.Move(worldDir * (moveSpeed * deltaTime));
+                m_CharacterController.Move(worldDir * (m_MoveSpeed * deltaTime));
             }
             ChangeLocomotion(IsMoving);
         }

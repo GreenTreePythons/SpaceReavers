@@ -18,15 +18,11 @@ namespace _Scripts.Character
         private PlayerAnimationController m_PlayerAnimationController;
         private Dictionary<PlayerStateType, PlayerState> m_States = new();
         private PlayerState m_CurrentState;
-        
-        private void Awake()
-        {   
-            m_States.Add(PlayerStateType.Attack, new PlayerAttackState(m_PlayerAnimationController));
-        }
 
         public void Initialize(PlayerAnimationController animController)
         {
             m_PlayerAnimationController = animController;
+            m_States.Add(PlayerStateType.Attack, new PlayerAttackState(m_PlayerAnimationController));
         }
         
         public void ChangeState(PlayerStateType nextStateType)

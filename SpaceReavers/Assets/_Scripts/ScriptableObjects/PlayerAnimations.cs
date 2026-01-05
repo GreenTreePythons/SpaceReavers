@@ -38,6 +38,7 @@ namespace _Datas
         [SerializeField] float m_NormalizedTransitionDuration;
         
         public PlayerStateType StateType => m_PlayerStateType;
+        public AnimationClip Clip => m_Clip;
         public string ClipName => m_Clip.name;
         public float TransitionDuration => m_NormalizedTransitionDuration;
     }

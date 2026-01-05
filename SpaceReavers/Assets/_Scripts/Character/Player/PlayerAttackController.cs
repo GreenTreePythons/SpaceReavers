@@ -1,11 +1,14 @@
-﻿using _Scripts.Projectile;
+﻿using System.Collections;
+using _Scripts.Projectile;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _Scripts.Character
 {
     public class PlayerAttackController : MonoBehaviour
     {
+        [Header("Stat")]
+        [SerializeField] float m_AttackSpeed = 3f;
+        
         [Header("Targeting")]
         [SerializeField] LayerMask m_TargetMask;
         [SerializeField] float m_AttackRange = 3.5f;
@@ -13,7 +16,7 @@ namespace _Scripts.Character
         [SerializeField] int m_CachingTargetCount = 10;
 
         [Header("Animation Overlay")]
-        [SerializeField] private int m_AttackAnimationLayer = 1; // UpperBody layer index
+        [SerializeField] private int m_AttackAnimationLayer = 1;
 
         [Header("VFX")]
         [SerializeField] ParticleSystem m_MuzzleVFX;
@@ -28,8 +31,9 @@ namespace _Scripts.Character
         private PlayerAnimationController m_AnimationController;
         private ProjectilePoolContorller m_ProjectilePoolContorller;
         private Collider[] m_TargetColliders;
+        private Coroutine m_AttackCoroutine;
         
-        private float m_AttackCooldown;
+        private float m_AttackCooldownTimer;
 
         public void Initialize(PlayerAnimationController ac, ProjectilePoolContorller pc)
         {
@@ -38,17 +42,24 @@ namespace _Scripts.Character
             m_ProjectilePoolContorller.Initialize(m_MuzzleRoot);
             m_TargetColliders = new Collider[m_CachingTargetCount];
             IsAttacking = false;
+            m_AttackCooldownTimer = 0f;
         }
 
         public void OnFixedUpdate(float deltaTime)
         {   
+            m_AttackCooldownTimer -= deltaTime;
+            
             m_CurrentTargetTransform = GetTargetInRange();
             var isTargetExist = m_CurrentTargetTransform != null;
-            ChangeAttackmotion(isTargetExist);
-            
             if (!isTargetExist) return;
             
             SetTartget(deltaTime);
+            
+            if (m_AttackCooldownTimer > 0f) return;
+            m_AttackCooldownTimer = 1f / m_AttackSpeed;
+
+            if(m_AttackCoroutine != null) StopCoroutine(m_AttackCoroutine);
+            m_AttackCoroutine = StartCoroutine(CoPlayFireAnimation());
         }
 
         private void SetTartget(float deltaTime)
@@ -79,27 +90,29 @@ namespace _Scripts.Character
 
             return targetTransform;
         }
-
-        private void ChangeAttackmotion(bool isAttacking)
+        
+        private IEnumerator CoPlayFireAnimation()
         {
-            if (IsAttacking == isAttacking) return;
-            IsAttacking = isAttacking;
-            if (isAttacking)
-            {
-                m_MuzzleVFX.Play();
-                m_AnimationController.PlayAnimation(PlayerStateType.Attack);
-                m_AnimationController.SetLayerWeight(AnimationLayer.Upper, 1f);
-                
-                var projectile = m_ProjectilePoolContorller.GetProjectile();
-                projectile.transform.position = m_MuzzleRoot.position;
-                var direction = m_CurrentTargetTransform.position - m_MuzzleRoot.position;
-                projectile.Initialize(direction.normalized);
-            }
-            else
-            {
-                m_MuzzleVFX.Stop();
-                m_AnimationController.SetLayerWeight(AnimationLayer.Upper, 0f);
-            } 
+            m_AnimationController.SetLayerWeight(m_AttackAnimationLayer, 1f);
+            
+            yield return m_AnimationController.CoPlayAnimation(
+                PlayerStateType.Attack,
+                AnimationParameterType.AttackSpeed,
+                m_AttackSpeed);
+            
+            m_AnimationController.SetLayerWeight(m_AttackAnimationLayer, 0f);
+        }
+
+        public void OnFireSingleShot()
+        {
+            if(!m_MuzzleVFX.gameObject.activeSelf) m_MuzzleVFX.gameObject.SetActive(true);
+            m_MuzzleVFX.Play();
+            
+            var projectile = m_ProjectilePoolContorller.GetProjectile();
+            projectile.transform.position = m_MuzzleRoot.position;
+            
+            var direction = m_CurrentTargetTransform.position - m_MuzzleRoot.position;
+            projectile.Initialize(direction.normalized);
         }
 
 #if UNITY_EDITOR

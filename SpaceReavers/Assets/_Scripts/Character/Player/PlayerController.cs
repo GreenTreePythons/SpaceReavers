@@ -5,8 +5,6 @@ namespace _Scripts.Character
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] float m_MoveSpeed = 2.0f;
-        
         private PlayerInputController m_PlayerInputController;
         private PlayerStateController m_PlayerStateController;
         private PlayerMoveController m_PlayerMoveController;
@@ -40,7 +38,7 @@ namespace _Scripts.Character
 
         private void FixedUpdate()
         {
-            m_PlayerMoveController.OnFixedUpdate(m_PlayerInputController.InputDirection, Time.fixedDeltaTime, m_MoveSpeed);
+            m_PlayerMoveController.OnFixedUpdate(m_PlayerInputController.InputDirection, Time.fixedDeltaTime);
             m_PlayerAttackController.OnFixedUpdate(Time.fixedDeltaTime);
         }
     }
