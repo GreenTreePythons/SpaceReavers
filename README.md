@@ -13,4 +13,3 @@
 1. SingletonPattern
 2. StatePattern
 3. DI Pattern(player controller method injection)
-4. CommandPattern
