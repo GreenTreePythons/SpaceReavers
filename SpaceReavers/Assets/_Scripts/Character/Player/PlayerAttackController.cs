@@ -18,8 +18,9 @@ namespace _Scripts.Character
         [Header("Animation Overlay")]
         [SerializeField] private int m_AttackAnimationLayer = 1;
 
-        [Header("VFX")]
+        [Header("Effect")]
         [SerializeField] ParticleSystem m_MuzzleVFX;
+        [SerializeField] AudioClip m_FireSound;
 
         [Header("Projectile")]
         [SerializeField] Transform m_MuzzleRoot;
@@ -31,7 +32,9 @@ namespace _Scripts.Character
         private PlayerAnimationController m_AnimationController;
         private ProjectilePoolContorller m_ProjectilePoolContorller;
         private Collider[] m_TargetColliders;
+        
         private Coroutine m_AttackCoroutine;
+        private Coroutine m_AttackAnimCoroutine;
         
         private float m_AttackCooldownTimer;
 
@@ -57,14 +60,15 @@ namespace _Scripts.Character
             
             if (m_AttackCooldownTimer > 0f) return;
             m_AttackCooldownTimer = 1f / m_AttackSpeed;
-
+            
             if(m_AttackCoroutine != null) StopCoroutine(m_AttackCoroutine);
             m_AttackCoroutine = StartCoroutine(CoPlayFireAnimation());
         }
 
         private void SetTartget(float deltaTime)
         {
-            var targetDir = m_CurrentTargetTransform.position - transform.position;
+            var targetTransform = m_CurrentTargetTransform;
+            var targetDir = targetTransform.position - transform.position;
             targetDir.y = 0f;
             Quaternion targetRot = Quaternion.LookRotation(targetDir);
             transform.rotation = Quaternion.Slerp(transform.rotation,targetRot,deltaTime * m_LookRotationSpeed);
@@ -93,18 +97,43 @@ namespace _Scripts.Character
         
         private IEnumerator CoPlayFireAnimation()
         {
-            m_AnimationController.SetLayerWeight(m_AttackAnimationLayer, 1f);
-            
-            yield return m_AnimationController.CoPlayAnimation(
+            float playTime = m_AnimationController.GetAnimationPlayTime(
                 PlayerStateType.Attack,
                 AnimationParameterType.AttackSpeed,
                 m_AttackSpeed);
             
+            float fireTime = playTime * 0.2f;
+            
+            m_AnimationController.SetLayerWeight(m_AttackAnimationLayer, 1f);
+            
+            if(m_AttackAnimCoroutine != null) StopCoroutine(m_AttackAnimCoroutine);
+            m_AttackAnimCoroutine = StartCoroutine(m_AnimationController.CoPlayAnimation(
+                PlayerStateType.Attack,
+                AnimationParameterType.AttackSpeed,
+                m_AttackSpeed));
+            
+            float elapsed = 0f;
+            bool fired = false;
+            while (elapsed < playTime)
+            {
+                elapsed += Time.deltaTime;
+                if (!fired && elapsed >= fireTime)
+                {
+                    fired = true;
+                    FireSingleShot();
+                }
+                float t = Mathf.Clamp01(elapsed / playTime);
+                m_AnimationController.SetLayerWeight(m_AttackAnimationLayer, Mathf.Lerp(1f, 0f, t));
+                yield return null;
+            }
+            
             m_AnimationController.SetLayerWeight(m_AttackAnimationLayer, 0f);
         }
 
-        public void OnFireSingleShot()
+        public void FireSingleShot()
         {
+            if(m_CurrentTargetTransform == null) return;
+            
             if(!m_MuzzleVFX.gameObject.activeSelf) m_MuzzleVFX.gameObject.SetActive(true);
             m_MuzzleVFX.Play();
             
@@ -112,6 +141,7 @@ namespace _Scripts.Character
             projectile.transform.position = m_MuzzleRoot.position;
             
             var direction = m_CurrentTargetTransform.position - m_MuzzleRoot.position;
+            direction.y = 0f;
             projectile.Initialize(direction.normalized);
         }
 
