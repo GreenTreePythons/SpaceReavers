@@ -16,6 +16,7 @@ namespace _Scripts.Projectile
         public void Initialize(Vector3 direction)
         {
             m_Direction = direction;
+            transform.rotation = Quaternion.LookRotation(direction);
         }
         
         public void Update()
